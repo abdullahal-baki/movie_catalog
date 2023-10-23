@@ -1,0 +1,46 @@
+/* Common styles for all screen sizes */
+.add-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff0000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.add-button:hover {
+  background-color: #555;
+}
+
+/* Responsive styles for smaller screens */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .add-button {
+    padding: 8px 16px;
+  }
+}
+
+/* Responsive styles for medium screens */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  
+  .add-button {
+    padding: 12px 24px;
+  }
+}
+
+/* Responsive styles for larger screens */
+@media only screen and (min-width: 1025px) {
+  body {
+    font-size: 18px;
+  }
+  
+  .add-button {
+    padding: 14px 28px;
+  }
+}

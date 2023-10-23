@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Movie Catalog</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='CSS/main.css') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='/images/favicon.ico')}}">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+			margin: 0;
+			padding: 20px;
+			background-image: url("/static/images/cover.jpg");
+			background-repeat:repeat-y;
+			background-position: center;
+			background-size: cover;
+		}
+		.main-area {
+			width: 80%;
+			max-width: 1100px;
+			margin: 0 auto;
+			margin-top: 100px;
+
+		}
+		.container {
+			background-color: rgba(255,255,255,0.7);
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		#search-box {
+			width: 90%;
+			padding: 10px;
+			border-radius: 4px;
+			border: 1px solid #608b32;
+			margin-bottom: 10px;
+		}
+
+		#suggestions {
+			margin-top: 5px;
+			
+		}
+		#suggestions a:hover{
+			color:#4CAF50
+		}
+
+		.flash-message {
+			padding: 10px;
+			margin-bottom: 5px;
+			border-radius: 4px;
+			background-color: #f1f1f1;
+			color: #d73434;
+			font-weight: bold;
+			text-align: center;
+		}
+
+		h4 {
+			font-size: 20px;
+			font-weight: bold;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			background-color: #36b5ec6e;
+			padding: 5px;
+			text-align: center;
+			border-radius: 3px;
+			color: #303130;
+		}
+
+		h3 {
+			font-size: 22px;
+			font-weight: bold;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			color: #ffffff;
+			background-color: darkgray;
+			padding-left: 10px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			border-radius: 4px;
+		}
+
+		ul {
+			list-style-type: none;
+			padding: 0;
+		}
+		ol {
+			font-size: 20px;
+			color: #737171;
+		}
+
+		li {
+			margin-bottom: 8px;
+		}
+		li a {
+			
+			font-size: large;
+		}
+		li a:hover{
+			color: #4CAF50;
+		}
+
+		a {
+			text-decoration: none;
+			color: #000;
+		}
+
+		table {
+			width: 80%;
+			border-collapse: collapse;
+			margin-top: 10px;
+		}
+
+		th {
+			padding: 8px;
+			border: 1px solid #ccc;
+			text-align: center;
+			background-color: #4bd0ee;
+			color: #242624;
+		}
+		td {
+			padding: 8px;
+			border: 1px solid #ccc;
+			margin: 10px;
+			
+		}
+		
+		td a {
+		
+			border-radius: 4px;
+			color: rgb(250, 244, 244);
+			padding: 6px;
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+			
+		}
+
+		#watched {
+			text-align: center;
+		}
+		#watched a{
+			background-color: #4CAF50;
+			color: #f2f2f2;
+		
+		}
+
+		#delete {
+			text-align: center;
+		}
+
+		#delete a{
+			background-color: red;
+		}
+
+		#watched a:hover {
+			background-color: rgb(222, 55, 222);
+		
+    	}
+		#delete a:hover {
+			background-color: rgb(73, 35, 197);
+		
+    	}
+
+		.add-button {
+			background-color: #4CAF50;
+			color: #f3fdfd;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-top: 20px;
+		}
+		.add-button a{
+			color: #e3eeee;
+			font-weight: bold;
+		}
+
+		@media (max-width: 768px) {
+			.container {
+				padding: 10px;
+			}
+
+			#search-box {
+				padding: 8px;
+				font-size: 14px;
+			}
+
+			h4,
+			h3 {
+				font-size: 16px;
+			}
+
+			table {
+				font-size: 14px;
+			}
+
+			.add-button {
+				padding: 8px 16px;
+			}
+		}
+
+		@media (max-width: 480px) {
+            table {
+			width: 100%;
+			}
+			.main-area {
+				width: 100%;
+				height: 100%;
+				max-width: 1100px;
+				margin: 0 auto;
+				margin-top: 20px;
+
+		}
+        }
+	</style>   
+</head>
+<body>
+	<div class="main-area">
+		<div class="container">
+			<input id="search-box" type="text" name="search-term" placeholder="Enter Movie info here">
+			<div id="suggestions"></div>
+		</div>
+			{% with messages = get_flashed_messages() %}
+			{% for message in messages %}
+			<div class="container">
+				<div class="flash-message">{{ message }}</div>
+			</div>
+			{% endfor %}
+			{% endwith %}
+
+
+		<div class="container">
+			<h4>Total {{ total }} Movies Watched</h4>
+
+			<div>
+				<h3>All Watched Movie Industries</h3>
+				<ol>
+				{% for industry in industries %}
+					<li><a href="/cat-show?cat={{ industry }}">{{ industry }}</a></li>
+				{% endfor %}
+				</ol>
+				
+			</div>
+
+			<div>
+				<h3>Recent Watched Movies</h3>
+				<ol>
+					{% for movie in recents %}
+					<li><a href="/show?id={{ movie.id }}">{{ movie.name }} ({{ movie.year }})</a></li>
+					{% endfor %}
+				</ol>
+			</div>
+
+			<div>
+				<h3>Upcoming Movies Wish List</h3>
+				<ul>
+					<table>
+						<tr>
+							<th>Name</th>
+							<th colspan="2">Action</th>
+						</tr>
+						{% for movie in wishlist %}
+						<tr>
+							<td>{{ movie.name }} ({{ movie.year }})</td>
+							<td id="watched"><a href="/action?action=watched&id={{ movie.id }}">Watched</a></td>
+							<td id="delete"><a href="/action?action=delete&id={{ movie.id }}">Delete</a></td>
+						</tr>
+						{% endfor %}
+					</table>
+				</ul>
+			</div>
+
+			<button class="add-button"><a href="/add">ADD NEW</a></button>
+		</div>
+	</div>
+
+
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("#search-box").keyup(function() {
+				var searchTerm = $(this).val();
+				if (searchTerm !== "") {
+					$.ajax({
+						url: "/autocomplete",
+						type: "POST",
+						data: { search_term: searchTerm },
+						success: function(response) {
+							$("#suggestions").html(response);
+						}
+					});
+				} else {
+					$("#suggestions").empty();
+				}
+			});
+		});
+	</script>
+</body>
+</html>

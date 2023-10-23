@@ -1,0 +1,3 @@
+{% for movie in suggestions %}
+    <p><a href="/show?id={{ movie.id }}" >{{ movie.name }} ({{ movie.year }})</a></p>
+{% endfor %}

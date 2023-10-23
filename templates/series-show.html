@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All {{ title }} Movies</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='/images/favicon.ico')}}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            font-weight: bold;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ol {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        
+        a:hover {
+            color: #4CAF50;
+        }
+
+
+
+
+        .movie-grid {
+            display: grid;
+            /* grid-template-columns: repeat(8, 1fr);  */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 10px; 
+            margin-top: 20px;
+        }
+
+        .movie-item {
+            text-align: center;
+        }
+
+        .movie-title {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>All {{ title }} Movies</h2>
+    <p>You Watched Total {{ total }} {{ title }} Movies</p>
+    <h3> All Movies </h3>
+    <div class="movie-grid">
+        {% for movie in movies %}
+            <div class="movie-item">
+                <a href="/show?id={{ movie.id }}">
+                    <img src="data:image/jpeg;base64,{{ movie.poster_data }}" alt="{{ movie.name }} Poster" width="200" height="300">
+                    <span class="movie-title">{{ movie.name }} ({{ movie.year }})</span>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
