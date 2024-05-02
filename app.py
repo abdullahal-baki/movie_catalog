@@ -1,3 +1,4 @@
+import threading
 import webbrowser
 from flask import Flask, render_template, request,redirect,url_for, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -5,7 +6,7 @@ import secrets
 import base64
 
 secret_key = secrets.token_hex(16)
-
+import movies_synchronizer
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -211,6 +212,13 @@ def do_action():
 	return redirect(url_for("index"))
 
 
+
+@app.route("/sync")
+def sync():
+    th = threading.Thread(target=movies_synchronizer.main)
+    th.start()
+    flash("Synchronization started successfully")
+    return redirect(url_for("index"))
 
 @app.route("/test")
 def test():
