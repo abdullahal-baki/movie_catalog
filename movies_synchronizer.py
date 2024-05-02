@@ -7,7 +7,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def main():
-    print("[+] Initializing Sycronization...")
     Base = declarative_base()
 
     class Movie(Base):
@@ -44,19 +43,33 @@ def main():
 
     #------------------updating watched movies---------------
     #--show tables
-    session_remote = Session_remote()
-    movies_remote = session_remote.query(Movie).all()
-    session_remote.close()
-
-    #--show tables
     session_local = Session_local()
     movies_local = session_local.query(Movie).all()
     session_local.close()
-
-
+    
+    #--show tables
+    session_remote = Session_remote()
+    total_number_of_movies = session_remote.query(Movie).count()
+    session_remote.close()
+    remote_movies_list = []
+    print("[+] Total in RemoteDB: ",total_number_of_movies)
+    for movie_id in range(1, total_number_of_movies + 1): 
+        print("[+] Fatching Movies from RemoteDB with ID: ",movie_id)
+        try:
+            session_remote = Session_remote()
+            movie_remote = session_remote.query(Movie).get(movie_id)
+            session_remote.close()
+            if movie_remote is not None:
+                remote_movies_list.append(movie_remote)
+            else:
+                print(f"No movie found with ID: {movie_id}")
+        except:
+            pass
+    print("[+] RemoteDB Movies Fetched")
+    
     # # Compare and update local movies
     print("[+] Upadating Local Watched Movies Database...")
-    for movie_remote in movies_remote:
+    for movie_remote in remote_movies_list:
         movie_exists = False
         for movie_local in movies_local:
             if (movie_local.name == movie_remote.name and
@@ -86,7 +99,7 @@ def main():
     print("[+] Updating Remote Watched Movies Database...")
     for movie_local in movies_local:
         movie_exists = False
-        for movie_remote in movies_remote:
+        for movie_remote in remote_movies_list:
             if (movie_local.name == movie_remote.name and
                 movie_local.year == movie_remote.year and
                 movie_local.industry == movie_remote.industry):
@@ -110,7 +123,6 @@ def main():
             print('[+] New movie successfully added.\n\n')
 
     #------------------E-N-D updating watched movies---------------
-
 
 
 
@@ -178,3 +190,4 @@ def main():
 
     #------------------E-N-D updating wishlist movies---------------
 
+main()
